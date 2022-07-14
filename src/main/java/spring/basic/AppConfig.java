@@ -1,6 +1,8 @@
 package spring.basic;
 
+import spring.basic.discount.DiscountPolicy;
 import spring.basic.discount.FixDiscountPolicy;
+import spring.basic.member.MemberRepository;
 import spring.basic.member.MemberService;
 import spring.basic.member.MemberServiceImpl;
 import spring.basic.member.MemoryMemberRepository;
@@ -10,10 +12,18 @@ import spring.basic.order.OrderServiceImpl;
 public class AppConfig {
 
     public MemberService memberService(){
-        return new MemberServiceImpl(new MemoryMemberRepository());
+        return new MemberServiceImpl(memberRepository());
     } // 생성자 주입
 
+    private MemberRepository memberRepository() {
+        return new MemoryMemberRepository();
+    }
+
     public OrderService orderService(){
-        return new OrderServiceImpl(new MemoryMemberRepository(), new FixDiscountPolicy()); // 생성자 주입
+        return new OrderServiceImpl(memberRepository(), discountPolicy()); // 생성자 주입
+    }
+
+    public DiscountPolicy discountPolicy() {
+        return new FixDiscountPolicy();
     }
 }
